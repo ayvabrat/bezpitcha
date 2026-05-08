@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { auth } from "@/lib/auth";
+import { useSession } from "@/lib/supabase-auth";
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
+  const { session, loading } = useSession();
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!auth.isAuthenticated()) {
-      navigate({ to: "/" });
-    } else {
-      setReady(true);
-    }
-  }, [navigate]);
-  if (!ready) return null;
+    if (!loading && !session) navigate({ to: "/" });
+  }, [loading, session, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+  if (!session) return null;
   return <>{children}</>;
 }
