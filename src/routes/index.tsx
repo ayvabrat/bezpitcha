@@ -27,14 +27,13 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,oklch(0.4_0.2_295/0.4),transparent_50%),radial-gradient(circle_at_70%_80%,oklch(0.4_0.2_260/0.4),transparent_50%)]" />
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ background: "var(--gradient-sky-dream)" }}>
       <div className="relative w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+          <h1 className="text-5xl font-semibold tracking-tight text-foreground">
             ⚡ BezPitcha
           </h1>
-          <p className="mt-2 text-muted-foreground">Admin Panel</p>
+          <p className="mt-2 text-muted-foreground text-sm">Admin Panel</p>
         </div>
         <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-8 shadow-2xl space-y-4">
           <div>
@@ -52,7 +51,7 @@ function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium hover:opacity-90 active:scale-[0.99] transition disabled:opacity-50"
+            className="w-full py-3 rounded-full bg-primary border border-accent text-primary-foreground font-medium hover:brightness-95 active:scale-[0.99] transition disabled:opacity-50"
           >
             {loading ? "..." : "Войти"}
           </button>
