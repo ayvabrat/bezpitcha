@@ -26,7 +26,7 @@ function Page() {
       <button
         onClick={() => m.mutate()}
         disabled={m.isPending}
-        className="flex items-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 disabled:opacity-50 active:scale-[0.99] transition"
+        className="flex items-center gap-2 px-5 py-3 rounded-full bg-primary border border-accent text-primary-foreground hover:brightness-95 disabled:opacity-50 active:scale-[0.99] transition"
       >
         {m.isPending ? (
           <>
@@ -44,7 +44,7 @@ function Page() {
         <ol className="space-y-3 animate-fade-in">
           {m.data.topics.map((t, i) => (
             <li key={i} className="bg-card border border-border rounded-xl p-4 flex gap-4 hover:border-primary/50 transition">
-              <span className="text-2xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{i + 1}</span>
+              <span className="text-2xl font-semibold text-accent">{i + 1}</span>
               <span className="self-center">{t}</span>
             </li>
           ))}

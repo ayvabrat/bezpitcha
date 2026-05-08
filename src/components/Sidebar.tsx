@@ -38,7 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         }`}
       >
         <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
-          <span className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <span className="font-semibold text-xl text-foreground tracking-tight">
             ⚡ BezPitcha
           </span>
         </div>

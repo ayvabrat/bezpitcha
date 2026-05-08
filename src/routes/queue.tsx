@@ -186,7 +186,7 @@ function GenerateModal({ material, onClose }: { material: Material | null; onClo
               <button
                 disabled={!platform}
                 onClick={() => gen.mutate({ id: material.id, p: platform })}
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium disabled:opacity-50 active:scale-[0.99] transition"
+                className="w-full py-3 rounded-full bg-primary border border-accent text-primary-foreground font-medium disabled:opacity-50 active:scale-[0.99] hover:brightness-95 transition"
               >
                 ✨ Сгенерировать
               </button>
