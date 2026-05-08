@@ -1,7 +1,7 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
-import { signOut } from "@/lib/supabase-auth";
+import { logout as doLogout } from "@/lib/auth";
 
 const items = [
   { to: "/dashboard", label: "Дашборд", icon: "📊" },
@@ -18,8 +18,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
-  const logout = async () => {
-    await signOut();
+  const logout = () => {
+    doLogout();
     navigate({ to: "/" });
   };
 
