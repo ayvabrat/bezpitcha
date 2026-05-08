@@ -1,7 +1,6 @@
 // REST client for the Python backend.
 // Base URL is read from VITE_API_BASE_URL (defaults to http://localhost:8000).
-import { getAccessToken } from "./supabase-auth";
-
+// Python API не требует авторизации — Bearer не передаём.
 export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "https://api.bezpitcha.ru";
 
@@ -12,12 +11,10 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const token = await getAccessToken();
   const headers = new Headers(init.headers);
   if (!headers.has("Content-Type") && init.body && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
-  if (token) headers.set("Authorization", `Bearer ${token}`);
 
   let res: Response;
   try {
