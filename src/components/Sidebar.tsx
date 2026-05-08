@@ -1,7 +1,7 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { auth } from "@/lib/auth";
 import { Menu, X, LogOut } from "lucide-react";
+import { signOut } from "@/lib/supabase-auth";
 
 const items = [
   { to: "/dashboard", label: "Дашборд", icon: "📊" },
@@ -18,22 +18,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
-  const logout = () => {
-    auth.logout();
+  const logout = async () => {
+    await signOut();
     navigate({ to: "/" });
   };
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Mobile topbar */}
       <header className="lg:hidden fixed top-0 inset-x-0 z-30 h-14 flex items-center justify-between px-4 border-b border-border bg-sidebar">
         <span className="font-bold text-lg">⚡ BezPitcha</span>
-        <button onClick={() => setOpen(!open)} className="p-2 rounded-lg hover:bg-secondary">
+        <button onClick={() => setOpen(!open)} className="p-2 rounded-lg hover:bg-secondary active:scale-95 transition">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
 
-      {/* Sidebar */}
       <aside
         className={`fixed lg:sticky top-0 left-0 z-20 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform ${
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -52,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={it.to}
                 to={it.to}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all active:scale-[0.98] ${
                   active
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                     : "text-sidebar-foreground hover:bg-secondary"
@@ -66,14 +64,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <button
           onClick={logout}
-          className="m-3 flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition"
+          className="m-3 flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition active:scale-[0.98]"
         >
           <LogOut size={16} /> Выйти
         </button>
       </aside>
 
       <main className="flex-1 min-w-0 pt-14 lg:pt-0">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-in">{children}</div>
+        <div key={path} className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-in">{children}</div>
       </main>
     </div>
   );

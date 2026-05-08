@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useEffect } from "react";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
-import { api } from "@/lib/mock-api";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/dashboard")({
   component: () => (
@@ -21,7 +23,15 @@ const cards = [
 ] as const;
 
 function Page() {
-  const { data, isLoading } = useQuery({ queryKey: ["stats"], queryFn: () => api.stats() });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["stats"],
+    queryFn: () => apiClient.stats(),
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (error) toast.error(`Не удалось загрузить статистику: ${(error as Error).message}`);
+  }, [error]);
 
   return (
     <div className="space-y-6">
@@ -36,11 +46,22 @@ function Page() {
             <div className="text-3xl">{c.icon}</div>
             <div className="mt-3 text-sm text-muted-foreground">{c.label}</div>
             <div className="mt-1 text-3xl font-bold">
-              {isLoading ? "—" : (data as Record<string, number>)?.[c.key]?.toLocaleString("ru")}
+              {isLoading ? (
+                <span className="inline-block w-16 h-7 bg-secondary rounded animate-pulse" />
+              ) : error ? (
+                "—"
+              ) : (
+                ((data as Record<string, number>)?.[c.key] ?? 0).toLocaleString("ru")
+              )}
             </div>
           </div>
         ))}
       </div>
+      {error && (
+        <div className="text-sm text-muted-foreground bg-card border border-border rounded-xl p-4">
+          Backend недоступен. Проверьте, что Python API запущен на <code className="text-primary">VITE_API_BASE_URL</code>.
+        </div>
+      )}
     </div>
   );
 }
