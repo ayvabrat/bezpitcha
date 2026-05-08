@@ -51,7 +51,7 @@ function Page() {
               ) : error ? (
                 "—"
               ) : (
-                ((data as Record<string, number>)?.[c.key] ?? 0).toLocaleString("ru")
+                (((data as unknown as Record<string, number>)?.[c.key]) ?? 0).toLocaleString("ru")
               )}
             </div>
           </div>
