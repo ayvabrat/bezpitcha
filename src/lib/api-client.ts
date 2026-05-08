@@ -3,7 +3,7 @@
 import { getAccessToken } from "./supabase-auth";
 
 export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "http://144.31.53.245:8000";
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "https://api.bezpitcha.ru";
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
