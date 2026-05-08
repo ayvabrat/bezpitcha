@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      channels: {
+        Row: {
+          added_at: string
+          id: string
+          style_description: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          style_description?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          style_description?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      watermark_settings: {
+        Row: {
+          image_path: string | null
+          opacity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          image_path?: string | null
+          opacity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          image_path?: string | null
+          opacity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
