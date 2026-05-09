@@ -117,8 +117,8 @@ function Page() {
           onScroll={onScroll}
           className="bg-card border border-border rounded-2xl p-4 h-[70vh] overflow-y-auto font-mono text-xs space-y-1.5"
         >
-          {logs.length === 0 && <div className="text-muted-foreground text-center py-8">Ожидание логов...</div>}
-          {logs.map((l, i) => (
+          {filtered.length === 0 && <div className="text-muted-foreground text-center py-8">{logs.length === 0 ? "Ожидание логов..." : "Нет записей по фильтру"}</div>}
+          {filtered.map((l, i) => (
             <div key={i} className={`flex gap-3 px-3 py-2 rounded border animate-fade-in ${colors[l.level] ?? colors.info}`}>
               <span className="text-muted-foreground shrink-0">{new Date(l.time).toLocaleTimeString("ru")}</span>
               <span className="uppercase text-[10px] font-bold shrink-0 self-center">{l.level}</span>
