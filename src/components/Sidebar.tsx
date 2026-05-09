@@ -2,6 +2,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { logout as doLogout } from "@/lib/auth";
+import { HealthBadge } from "@/components/HealthBadge";
 
 const items = [
   { to: "/dashboard", label: "Дашборд", icon: "📊" },
