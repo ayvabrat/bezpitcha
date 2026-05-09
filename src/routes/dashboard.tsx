@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useEffect } from "react";
+import { AlertTriangle } from "lucide-react";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
-import { apiClient } from "@/lib/api-client";
+import { apiClient, type Stats } from "@/lib/api-client";
 
 export const Route = createFileRoute("/dashboard")({
   component: () => (
@@ -23,22 +22,38 @@ const cards = [
 ] as const;
 
 function Page() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, dataUpdatedAt, isFetching } = useQuery<Stats>({
     queryKey: ["stats"],
     queryFn: () => apiClient.stats(),
-    retry: 1,
+    refetchInterval: 7_000,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
-
-  useEffect(() => {
-    if (error) toast.error(`Не удалось загрузить статистику: ${(error as Error).message}`);
-  }, [error]);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">📊 Дашборд</h1>
-        <p className="text-muted-foreground mt-1">Сводная статистика парсера</p>
+      <div className="flex items-end justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold">📊 Дашборд</h1>
+          <p className="text-muted-foreground mt-1">
+            Сводная статистика парсера
+            {dataUpdatedAt > 0 && (
+              <span className="ml-2 text-xs">· обновлено {new Date(dataUpdatedAt).toLocaleTimeString("ru")}{isFetching ? " · обновление…" : ""}</span>
+            )}
+          </p>
+        </div>
       </div>
+
+      {data?.degraded && (
+        <div className="flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 text-amber-400 px-4 py-3 animate-fade-in">
+          <AlertTriangle size={18} />
+          <div className="text-sm">
+            <div className="font-medium">Бэкенд работает в деградированном режиме</div>
+            <div className="opacity-80">{data.degraded_reason ?? "часть подсистем недоступна"}</div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((c) => (
           <div key={c.key} className="relative overflow-hidden bg-card border border-border rounded-2xl p-5 hover:border-primary/50 transition-all hover:-translate-y-0.5">
@@ -51,15 +66,16 @@ function Page() {
               ) : error ? (
                 "—"
               ) : (
-                (((data as unknown as Record<string, number>)?.[c.key]) ?? 0).toLocaleString("ru")
+                ((data as unknown as Record<string, number>)?.[c.key] ?? 0).toLocaleString("ru")
               )}
             </div>
           </div>
         ))}
       </div>
+
       {error && (
         <div className="text-sm text-muted-foreground bg-card border border-border rounded-xl p-4">
-          Backend недоступен. Проверьте, что Python API запущен на <code className="text-primary">VITE_API_BASE_URL</code>.
+          Backend недоступен: {(error as Error).message}. Авто-повтор каждые 7 секунд.
         </div>
       )}
     </div>
