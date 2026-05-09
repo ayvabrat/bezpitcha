@@ -1,5 +1,4 @@
 import { API_BASE_URL } from "./api-client";
-import { getAccessToken } from "./supabase-auth";
 
 export type LogEntry = {
   time: string;
@@ -22,9 +21,8 @@ export function connectLogs(h: LogsHandlers): () => void {
 
   const open = async () => {
     h.onStatus("connecting");
-    const token = await getAccessToken();
     const wsBase = API_BASE_URL.replace(/^http/i, "ws");
-    const url = `${wsBase}/api/logs${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+    const url = `${wsBase}/api/logs`;
     try {
       ws = new WebSocket(url);
     } catch {
