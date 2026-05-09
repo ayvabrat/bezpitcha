@@ -20,14 +20,21 @@ function Page() {
   const [status, setStatus] = useState<LogsStatus>("connecting");
   const [autoStick, setAutoStick] = useState(true);
   const [hasNew, setHasNew] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<"all" | "info" | "warning" | "error">("all");
+  const [search, setSearch] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     return connectLogs({
-      onMessage: (l) => setLogs((p) => [...p, l].slice(-500)),
+      onMessage: (l) => setLogs((p) => [...p, l].slice(-1000)),
       onStatus: setStatus,
     });
   }, []);
+
+  const filtered = logs.filter((l) =>
+    (levelFilter === "all" || l.level === levelFilter) &&
+    (!search || l.message.toLowerCase().includes(search.toLowerCase()))
+  );
 
   // Auto-scroll only if user is near bottom
   useEffect(() => {
@@ -39,7 +46,7 @@ function Page() {
     } else {
       setHasNew(true);
     }
-  }, [logs, autoStick]);
+  }, [filtered.length, autoStick]);
 
   const onScroll = () => {
     const el = ref.current;
@@ -62,7 +69,7 @@ function Page() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold">📜 Логи</h1>
-          <p className="text-muted-foreground mt-1">Реальное время • {logs.length} записей</p>
+          <p className="text-muted-foreground mt-1">Реальное время • {filtered.length} / {logs.length} записей</p>
         </div>
         <div className="flex items-center gap-3">
           <span className={`text-xs px-2 py-1 rounded-full border ${
@@ -78,6 +85,25 @@ function Page() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="🔍 Поиск по сообщениям..."
+          className="px-3 py-2 rounded-lg bg-input border border-border outline-none focus:border-primary text-sm"
+        />
+        <select
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value as typeof levelFilter)}
+          className="px-3 py-2 rounded-lg bg-input border border-border text-sm"
+        >
+          <option value="all">Все уровни</option>
+          <option value="info">info</option>
+          <option value="warning">warning</option>
+          <option value="error">error</option>
+        </select>
+      </div>
+
       {status !== "open" && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-sm animate-fade-in">
           <AlertCircle size={16} />
@@ -91,8 +117,8 @@ function Page() {
           onScroll={onScroll}
           className="bg-card border border-border rounded-2xl p-4 h-[70vh] overflow-y-auto font-mono text-xs space-y-1.5"
         >
-          {logs.length === 0 && <div className="text-muted-foreground text-center py-8">Ожидание логов...</div>}
-          {logs.map((l, i) => (
+          {filtered.length === 0 && <div className="text-muted-foreground text-center py-8">{logs.length === 0 ? "Ожидание логов..." : "Нет записей по фильтру"}</div>}
+          {filtered.map((l, i) => (
             <div key={i} className={`flex gap-3 px-3 py-2 rounded border animate-fade-in ${colors[l.level] ?? colors.info}`}>
               <span className="text-muted-foreground shrink-0">{new Date(l.time).toLocaleTimeString("ru")}</span>
               <span className="uppercase text-[10px] font-bold shrink-0 self-center">{l.level}</span>

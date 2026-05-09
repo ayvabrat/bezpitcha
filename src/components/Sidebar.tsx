@@ -2,6 +2,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { logout as doLogout } from "@/lib/auth";
+import { HealthBadge } from "@/components/HealthBadge";
 
 const items = [
   { to: "/dashboard", label: "Дашборд", icon: "📊" },
@@ -37,10 +38,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
-          <span className="font-semibold text-xl text-foreground tracking-tight">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border gap-2">
+          <span className="font-semibold text-lg text-foreground tracking-tight shrink-0">
             ⚡ BezPitcha
           </span>
+          <HealthBadge />
         </div>
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {items.map((it) => {
