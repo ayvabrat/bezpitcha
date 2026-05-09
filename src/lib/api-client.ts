@@ -1,12 +1,7 @@
-// Production-grade REST client for the Python backend.
-// - Timeout per request (configurable)
-// - Retry with exponential backoff for network errors and 5xx
-// - AbortController support
-// - Health telemetry (success/failure/latency) via emitter for HealthBadge
-// - No JWT — backend is single-user trusted mode
+// Internal REST client for TanStack Start backend.
+// Uses relative URLs — all API routes are served by the same origin.
 
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "https://api.bezpitcha.ru";
+export const API_BASE_URL = "";
 
 export class ApiError extends Error {
   constructor(public status: number, message: string, public retried = 0) {
@@ -16,7 +11,7 @@ export class ApiError extends Error {
 
 // --- Health telemetry --------------------------------------------------------
 
-export type HealthStatus = "unknown" | "online" | "degraded" | "offline";
+export type HealthStatus = "unknown" | "ok" | "degraded" | "down";
 
 export interface HealthSnapshot {
   status: HealthStatus;
@@ -52,7 +47,7 @@ export function markDegraded(reason: string | null) {
 function recordSuccess(latencyMs: number) {
   snapshot = {
     ...snapshot,
-    status: snapshot.status === "degraded" ? "degraded" : "online",
+    status: snapshot.status === "degraded" ? "degraded" : "ok",
     lastSuccessAt: Date.now(),
     latencyMs,
     consecutiveFailures: 0,
@@ -63,7 +58,7 @@ function recordFailure(message: string) {
   const fails = snapshot.consecutiveFailures + 1;
   snapshot = {
     ...snapshot,
-    status: fails >= 2 ? "offline" : "degraded",
+    status: fails >= 2 ? "down" : "degraded",
     lastErrorAt: Date.now(),
     lastError: message,
     consecutiveFailures: fails,
@@ -159,8 +154,6 @@ export interface Stats {
   published_today: number;
   published_week: number;
   rejected_total: number;
-  degraded?: boolean;
-  degraded_reason?: string;
 }
 
 export interface Material {
@@ -205,9 +198,10 @@ export const apiClient = {
   ping: async (signal?: AbortSignal): Promise<{ ok: boolean; latencyMs: number; degraded: boolean; reason?: string }> => {
     const t0 = performance.now();
     try {
-      const s = await request<Stats>("/api/stats", { signal, timeoutMs: 6000, retries: 0, silent: true });
+      const s = await request<{ status: string; db_ok?: boolean }>("/api/health", { signal, timeoutMs: 6000, retries: 0, silent: true });
       const latencyMs = Math.round(performance.now() - t0);
-      return { ok: true, latencyMs, degraded: !!s.degraded, reason: s.degraded_reason };
+      const degraded = s.status !== "ok" || s.db_ok === false;
+      return { ok: true, latencyMs, degraded, reason: degraded ? (s.status !== "ok" ? s.status : "db unavailable") : undefined };
     } catch (e) {
       return { ok: false, latencyMs: Math.round(performance.now() - t0), degraded: false, reason: (e as Error).message };
     }

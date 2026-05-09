@@ -17,6 +17,16 @@ import { Route as LogsRouteImport } from './routes/logs'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiWatermarkRouteImport } from './routes/api/watermark'
+import { Route as ApiTopicsRouteImport } from './routes/api/topics'
+import { Route as ApiStatsRouteImport } from './routes/api/stats'
+import { Route as ApiMaterialsRouteImport } from './routes/api/materials'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as ApiWatermarkUploadRouteImport } from './routes/api/watermark.upload'
+import { Route as ApiCronTickRouteImport } from './routes/api/cron.tick'
+import { Route as ApiChannelsScanRouteImport } from './routes/api/channels.scan'
+import { Route as ApiMaterialsIdGenerateRouteImport } from './routes/api/materials.$id.generate'
+import { Route as ApiMaterialsIdAnalyzeRouteImport } from './routes/api/materials.$id.analyze'
 
 const WatermarkRoute = WatermarkRouteImport.update({
   id: '/watermark',
@@ -58,6 +68,56 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWatermarkRoute = ApiWatermarkRouteImport.update({
+  id: '/api/watermark',
+  path: '/api/watermark',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTopicsRoute = ApiTopicsRouteImport.update({
+  id: '/api/topics',
+  path: '/api/topics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStatsRoute = ApiStatsRouteImport.update({
+  id: '/api/stats',
+  path: '/api/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMaterialsRoute = ApiMaterialsRouteImport.update({
+  id: '/api/materials',
+  path: '/api/materials',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWatermarkUploadRoute = ApiWatermarkUploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => ApiWatermarkRoute,
+} as any)
+const ApiCronTickRoute = ApiCronTickRouteImport.update({
+  id: '/api/cron/tick',
+  path: '/api/cron/tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChannelsScanRoute = ApiChannelsScanRouteImport.update({
+  id: '/api/channels/scan',
+  path: '/api/channels/scan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMaterialsIdGenerateRoute = ApiMaterialsIdGenerateRouteImport.update({
+  id: '/$id/generate',
+  path: '/$id/generate',
+  getParentRoute: () => ApiMaterialsRoute,
+} as any)
+const ApiMaterialsIdAnalyzeRoute = ApiMaterialsIdAnalyzeRouteImport.update({
+  id: '/$id/analyze',
+  path: '/$id/analyze',
+  getParentRoute: () => ApiMaterialsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +128,16 @@ export interface FileRoutesByFullPath {
   '/styles': typeof StylesRoute
   '/topics': typeof TopicsRoute
   '/watermark': typeof WatermarkRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/materials': typeof ApiMaterialsRouteWithChildren
+  '/api/stats': typeof ApiStatsRoute
+  '/api/topics': typeof ApiTopicsRoute
+  '/api/watermark': typeof ApiWatermarkRouteWithChildren
+  '/api/channels/scan': typeof ApiChannelsScanRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/watermark/upload': typeof ApiWatermarkUploadRoute
+  '/api/materials/$id/analyze': typeof ApiMaterialsIdAnalyzeRoute
+  '/api/materials/$id/generate': typeof ApiMaterialsIdGenerateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +148,16 @@ export interface FileRoutesByTo {
   '/styles': typeof StylesRoute
   '/topics': typeof TopicsRoute
   '/watermark': typeof WatermarkRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/materials': typeof ApiMaterialsRouteWithChildren
+  '/api/stats': typeof ApiStatsRoute
+  '/api/topics': typeof ApiTopicsRoute
+  '/api/watermark': typeof ApiWatermarkRouteWithChildren
+  '/api/channels/scan': typeof ApiChannelsScanRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/watermark/upload': typeof ApiWatermarkUploadRoute
+  '/api/materials/$id/analyze': typeof ApiMaterialsIdAnalyzeRoute
+  '/api/materials/$id/generate': typeof ApiMaterialsIdGenerateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +169,16 @@ export interface FileRoutesById {
   '/styles': typeof StylesRoute
   '/topics': typeof TopicsRoute
   '/watermark': typeof WatermarkRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/materials': typeof ApiMaterialsRouteWithChildren
+  '/api/stats': typeof ApiStatsRoute
+  '/api/topics': typeof ApiTopicsRoute
+  '/api/watermark': typeof ApiWatermarkRouteWithChildren
+  '/api/channels/scan': typeof ApiChannelsScanRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/watermark/upload': typeof ApiWatermarkUploadRoute
+  '/api/materials/$id/analyze': typeof ApiMaterialsIdAnalyzeRoute
+  '/api/materials/$id/generate': typeof ApiMaterialsIdGenerateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +191,16 @@ export interface FileRouteTypes {
     | '/styles'
     | '/topics'
     | '/watermark'
+    | '/api/health'
+    | '/api/materials'
+    | '/api/stats'
+    | '/api/topics'
+    | '/api/watermark'
+    | '/api/channels/scan'
+    | '/api/cron/tick'
+    | '/api/watermark/upload'
+    | '/api/materials/$id/analyze'
+    | '/api/materials/$id/generate'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +211,16 @@ export interface FileRouteTypes {
     | '/styles'
     | '/topics'
     | '/watermark'
+    | '/api/health'
+    | '/api/materials'
+    | '/api/stats'
+    | '/api/topics'
+    | '/api/watermark'
+    | '/api/channels/scan'
+    | '/api/cron/tick'
+    | '/api/watermark/upload'
+    | '/api/materials/$id/analyze'
+    | '/api/materials/$id/generate'
   id:
     | '__root__'
     | '/'
@@ -121,6 +231,16 @@ export interface FileRouteTypes {
     | '/styles'
     | '/topics'
     | '/watermark'
+    | '/api/health'
+    | '/api/materials'
+    | '/api/stats'
+    | '/api/topics'
+    | '/api/watermark'
+    | '/api/channels/scan'
+    | '/api/cron/tick'
+    | '/api/watermark/upload'
+    | '/api/materials/$id/analyze'
+    | '/api/materials/$id/generate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +252,13 @@ export interface RootRouteChildren {
   StylesRoute: typeof StylesRoute
   TopicsRoute: typeof TopicsRoute
   WatermarkRoute: typeof WatermarkRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  ApiMaterialsRoute: typeof ApiMaterialsRouteWithChildren
+  ApiStatsRoute: typeof ApiStatsRoute
+  ApiTopicsRoute: typeof ApiTopicsRoute
+  ApiWatermarkRoute: typeof ApiWatermarkRouteWithChildren
+  ApiChannelsScanRoute: typeof ApiChannelsScanRoute
+  ApiCronTickRoute: typeof ApiCronTickRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,8 +319,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/watermark': {
+      id: '/api/watermark'
+      path: '/api/watermark'
+      fullPath: '/api/watermark'
+      preLoaderRoute: typeof ApiWatermarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/topics': {
+      id: '/api/topics'
+      path: '/api/topics'
+      fullPath: '/api/topics'
+      preLoaderRoute: typeof ApiTopicsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stats': {
+      id: '/api/stats'
+      path: '/api/stats'
+      fullPath: '/api/stats'
+      preLoaderRoute: typeof ApiStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/materials': {
+      id: '/api/materials'
+      path: '/api/materials'
+      fullPath: '/api/materials'
+      preLoaderRoute: typeof ApiMaterialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/watermark/upload': {
+      id: '/api/watermark/upload'
+      path: '/upload'
+      fullPath: '/api/watermark/upload'
+      preLoaderRoute: typeof ApiWatermarkUploadRouteImport
+      parentRoute: typeof ApiWatermarkRoute
+    }
+    '/api/cron/tick': {
+      id: '/api/cron/tick'
+      path: '/api/cron/tick'
+      fullPath: '/api/cron/tick'
+      preLoaderRoute: typeof ApiCronTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/channels/scan': {
+      id: '/api/channels/scan'
+      path: '/api/channels/scan'
+      fullPath: '/api/channels/scan'
+      preLoaderRoute: typeof ApiChannelsScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/materials/$id/generate': {
+      id: '/api/materials/$id/generate'
+      path: '/$id/generate'
+      fullPath: '/api/materials/$id/generate'
+      preLoaderRoute: typeof ApiMaterialsIdGenerateRouteImport
+      parentRoute: typeof ApiMaterialsRoute
+    }
+    '/api/materials/$id/analyze': {
+      id: '/api/materials/$id/analyze'
+      path: '/$id/analyze'
+      fullPath: '/api/materials/$id/analyze'
+      preLoaderRoute: typeof ApiMaterialsIdAnalyzeRouteImport
+      parentRoute: typeof ApiMaterialsRoute
+    }
   }
 }
+
+interface ApiMaterialsRouteChildren {
+  ApiMaterialsIdAnalyzeRoute: typeof ApiMaterialsIdAnalyzeRoute
+  ApiMaterialsIdGenerateRoute: typeof ApiMaterialsIdGenerateRoute
+}
+
+const ApiMaterialsRouteChildren: ApiMaterialsRouteChildren = {
+  ApiMaterialsIdAnalyzeRoute: ApiMaterialsIdAnalyzeRoute,
+  ApiMaterialsIdGenerateRoute: ApiMaterialsIdGenerateRoute,
+}
+
+const ApiMaterialsRouteWithChildren = ApiMaterialsRoute._addFileChildren(
+  ApiMaterialsRouteChildren,
+)
+
+interface ApiWatermarkRouteChildren {
+  ApiWatermarkUploadRoute: typeof ApiWatermarkUploadRoute
+}
+
+const ApiWatermarkRouteChildren: ApiWatermarkRouteChildren = {
+  ApiWatermarkUploadRoute: ApiWatermarkUploadRoute,
+}
+
+const ApiWatermarkRouteWithChildren = ApiWatermarkRoute._addFileChildren(
+  ApiWatermarkRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -204,7 +427,24 @@ const rootRouteChildren: RootRouteChildren = {
   StylesRoute: StylesRoute,
   TopicsRoute: TopicsRoute,
   WatermarkRoute: WatermarkRoute,
+  ApiHealthRoute: ApiHealthRoute,
+  ApiMaterialsRoute: ApiMaterialsRouteWithChildren,
+  ApiStatsRoute: ApiStatsRoute,
+  ApiTopicsRoute: ApiTopicsRoute,
+  ApiWatermarkRoute: ApiWatermarkRouteWithChildren,
+  ApiChannelsScanRoute: ApiChannelsScanRoute,
+  ApiCronTickRoute: ApiCronTickRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

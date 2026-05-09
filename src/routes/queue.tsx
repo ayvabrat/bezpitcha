@@ -7,7 +7,9 @@ import { Copy, Sparkles, Wand2, ChevronLeft, ChevronRight, Check, RefreshCw, Che
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
 import { Modal } from "@/components/Modal";
+import { useServerFn } from "@tanstack/react-start";
 import { apiClient, type Material } from "@/lib/api-client";
+import { listMaterials, analyzeMaterial, generatePost } from "@/lib/materials.functions";
 import { taskStore, useTask } from "@/lib/task-store";
 
 export const Route = createFileRoute("/queue")({
@@ -44,11 +46,12 @@ function Page() {
   const total = data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / 20));
 
+  const analyzeMaterialFn = useServerFn(analyzeMaterial);
   const analyzeOne = async (id: string): Promise<boolean> => {
     if (taskStore.isRunning("analyze", id)) return false;
     taskStore.start("analyze", id);
     try {
-      await apiClient.analyze(id);
+      await analyzeMaterialFn({ data: { id } });
       taskStore.finish("analyze", id, true, "Анализ завершён");
       return true;
     } catch (e) {
@@ -292,11 +295,12 @@ function GenerateModal({ material, onClose }: { material: Material | null; onClo
   const [title, setTitle] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
+  const generatePostFn = useServerFn(generatePost);
   const gen = useMutation({
     mutationFn: async ({ id, p }: { id: string; p: string }) => {
       taskStore.start("generate", id, { platform: p });
       try {
-        const r = await apiClient.generate(id, p);
+        const r = await generatePostFn({ data: { id, platform: p } });
         taskStore.finish("generate", id, true, `Готово (${p})`);
         return r;
       } catch (e) {

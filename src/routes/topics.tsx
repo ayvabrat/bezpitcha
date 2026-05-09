@@ -5,7 +5,8 @@ import { Lightbulb, Clock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
-import { apiClient } from "@/lib/api-client";
+import { useServerFn } from "@tanstack/react-start";
+import { suggestTopics } from "@/lib/topics.functions";
 
 export const Route = createFileRoute("/topics")({
   component: () => (<AuthGate><AppShell><Page /></AppShell></AuthGate>),
@@ -27,8 +28,12 @@ function Page() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   useEffect(() => { setHistory(loadHistory()); }, []);
 
+  const suggestTopicsFn = useServerFn(suggestTopics);
   const m = useMutation({
-    mutationFn: () => apiClient.topics(),
+    mutationFn: async () => {
+      const res = await suggestTopicsFn();
+      return res;
+    },
     onSuccess: (r) => {
       const next = [{ at: new Date().toISOString(), topics: r.topics }, ...loadHistory()].slice(0, 20);
       setHistory(next);

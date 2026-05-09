@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Plus, Trash2, RefreshCw, CheckCircle2, XCircle, Wifi, WifiOff } from "lucide-react";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
-import { apiClient } from "@/lib/api-client";
+import { useServerFn } from "@tanstack/react-start";
+import { scanChannel } from "@/lib/channels.functions";
 import { connectLogs, type LogEntry, type LogsStatus } from "@/lib/logs-ws";
 
 export const Route = createFileRoute("/channels")({
@@ -132,12 +133,13 @@ function Page() {
     update(list);
   };
 
+  const scanChannelFn = useServerFn(scanChannel);
   const scanM = useMutation({
     mutationFn: async (raw: string) => {
       const u = raw.startsWith("@") ? raw : "@" + raw;
       upsert(u, { last_status: "scanning", last_message: "Запуск...", progress: 5, log_lines: [] });
       try {
-        const res = await apiClient.scanChannel(u);
+        const res = await scanChannelFn({ data: { username: u } });
         upsert(u, {
           last_scan_at: new Date().toISOString(),
           last_status: res.success ? "success" : "error",

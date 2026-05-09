@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./api-client";
+import { supabase } from "@/integrations/supabase/client";
 
 export type LogEntry = {
   time: string;
@@ -14,38 +14,37 @@ export interface LogsHandlers {
 }
 
 export function connectLogs(h: LogsHandlers): () => void {
-  let ws: WebSocket | null = null;
   let attempt = 0;
   let closedByUser = false;
   let retryTimer: ReturnType<typeof setTimeout> | null = null;
+  let channel: ReturnType<typeof supabase.channel> | null = null;
 
-  const open = async () => {
+  const open = () => {
     h.onStatus("connecting");
-    const wsBase = API_BASE_URL.replace(/^http/i, "ws");
-    const url = `${wsBase}/api/logs`;
-    try {
-      ws = new WebSocket(url);
-    } catch {
-      schedule();
-      return;
-    }
-    ws.onopen = () => {
-      attempt = 0;
-      h.onStatus("open");
-    };
-    ws.onmessage = (ev) => {
-      try {
-        const data = JSON.parse(ev.data);
-        if (data && data.message) h.onMessage(data as LogEntry);
-      } catch {
-        h.onMessage({ time: new Date().toISOString(), level: "info", message: String(ev.data) });
-      }
-    };
-    ws.onerror = () => { /* surfaced via close */ };
-    ws.onclose = () => {
-      h.onStatus("closed");
-      if (!closedByUser) schedule();
-    };
+    channel = supabase
+      .channel("logs_changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "logs" },
+        (payload: { new?: Record<string, unknown> }) => {
+          const row = payload.new;
+          if (!row) return;
+          h.onMessage({
+            time: row.created_at as string,
+            level: (row.level as LogEntry["level"]) ?? "info",
+            message: String(row.message ?? ""),
+          });
+        },
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          attempt = 0;
+          h.onStatus("open");
+        } else if (status === "CLOSED" || status === "CHANNEL_ERROR") {
+          h.onStatus("closed");
+          if (!closedByUser) schedule();
+        }
+      });
   };
 
   const schedule = () => {
@@ -58,6 +57,6 @@ export function connectLogs(h: LogsHandlers): () => void {
   return () => {
     closedByUser = true;
     if (retryTimer) clearTimeout(retryTimer);
-    ws?.close();
+    channel?.unsubscribe();
   };
 }

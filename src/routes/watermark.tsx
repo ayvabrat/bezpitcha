@@ -3,16 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
-import { apiClient } from "@/lib/api-client";
+import { useServerFn } from "@tanstack/react-start";
+import { getWatermarkSettings } from "@/lib/watermark.functions";
 
 export const Route = createFileRoute("/watermark")({
   component: () => (<AuthGate><AppShell><Page /></AppShell></AuthGate>),
 });
 
 function Page() {
+  const watermarkFn = useServerFn(getWatermarkSettings);
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["watermark"],
-    queryFn: ({ signal }) => apiClient.watermark(signal),
+    queryFn: () => watermarkFn(),
     refetchInterval: 30_000,
   });
 

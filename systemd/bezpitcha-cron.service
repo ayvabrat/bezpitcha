@@ -1,0 +1,7 @@
+[Unit]
+Description=BezPitcha cron tick — process task queue
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/curl -sfS -H "x-cron-secret: %CRON_SECRET%" https://bezpitcha.ru/api/cron/tick
+EnvironmentFile=/opt/bezpitcha/.env

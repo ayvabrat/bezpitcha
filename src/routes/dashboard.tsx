@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
 import { AppShell } from "@/components/Sidebar";
 import { AuthGate } from "@/components/AuthGate";
+import { useServerFn } from "@tanstack/react-start";
 import { apiClient, type Stats } from "@/lib/api-client";
 
 export const Route = createFileRoute("/dashboard")({
@@ -44,13 +45,9 @@ function Page() {
         </div>
       </div>
 
-      {data?.degraded && (
-        <div className="flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 text-amber-400 px-4 py-3 animate-fade-in">
-          <AlertTriangle size={18} />
-          <div className="text-sm">
-            <div className="font-medium">Бэкенд работает в деградированном режиме</div>
-            <div className="opacity-80">{data.degraded_reason ?? "часть подсистем недоступна"}</div>
-          </div>
+      {error && (
+        <div className="text-sm text-muted-foreground bg-card border border-border rounded-xl p-4">
+          Backend недоступен: {(error as Error).message}. Авто-повтор каждые 7 секунд.
         </div>
       )}
 
@@ -72,12 +69,6 @@ function Page() {
           </div>
         ))}
       </div>
-
-      {error && (
-        <div className="text-sm text-muted-foreground bg-card border border-border rounded-xl p-4">
-          Backend недоступен: {(error as Error).message}. Авто-повтор каждые 7 секунд.
-        </div>
-      )}
     </div>
   );
 }

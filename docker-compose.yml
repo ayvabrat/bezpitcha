@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - bezpitcha
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - bezpitcha
+    depends_on:
+      - web
+
+networks:
+  bezpitcha:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -29,17 +29,17 @@ export function HealthBadge() {
 
   const status = health.status;
   const cls =
-    status === "online"   ? "border-emerald-400/40 text-emerald-400 bg-emerald-400/10"
+    status === "ok"       ? "border-emerald-400/40 text-emerald-400 bg-emerald-400/10"
     : status === "degraded" ? "border-amber-400/40 text-amber-400 bg-amber-400/10"
-    : status === "offline"  ? "border-rose-400/40 text-rose-400 bg-rose-400/10"
+    : status === "down"     ? "border-rose-400/40 text-rose-400 bg-rose-400/10"
     : "border-border text-muted-foreground bg-secondary/40";
 
-  const Icon = status === "online" ? Activity : status === "offline" ? WifiOff : AlertTriangle;
+  const Icon = status === "ok" ? Activity : status === "down" ? WifiOff : AlertTriangle;
 
   const label =
-    status === "online"   ? "API онлайн"
+    status === "ok"       ? "API онлайн"
     : status === "degraded" ? "API деградирован"
-    : status === "offline"  ? "API недоступен"
+    : status === "down"     ? "API недоступен"
     : "проверка…";
 
   const ageS = health.lastSuccessAt ? Math.max(0, Math.round((now - health.lastSuccessAt) / 1000)) : null;

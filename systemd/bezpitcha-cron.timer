@@ -1,0 +1,10 @@
+[Unit]
+Description=BezPitcha cron timer — every minute
+Requires=bezpitcha-cron.service
+
+[Timer]
+OnCalendar=*:*:0
+Persistent=true
+
+[Install]
+WantedBy=timers.target
