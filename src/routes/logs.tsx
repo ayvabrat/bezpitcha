@@ -85,6 +85,25 @@ function Page() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="🔍 Поиск по сообщениям..."
+          className="px-3 py-2 rounded-lg bg-input border border-border outline-none focus:border-primary text-sm"
+        />
+        <select
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value as typeof levelFilter)}
+          className="px-3 py-2 rounded-lg bg-input border border-border text-sm"
+        >
+          <option value="all">Все уровни</option>
+          <option value="info">info</option>
+          <option value="warning">warning</option>
+          <option value="error">error</option>
+        </select>
+      </div>
+
       {status !== "open" && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-sm animate-fade-in">
           <AlertCircle size={16} />
