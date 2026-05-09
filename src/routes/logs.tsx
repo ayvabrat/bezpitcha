@@ -46,7 +46,7 @@ function Page() {
     } else {
       setHasNew(true);
     }
-  }, [logs, autoStick]);
+  }, [filtered.length, autoStick]);
 
   const onScroll = () => {
     const el = ref.current;
