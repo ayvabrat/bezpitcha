@@ -69,7 +69,7 @@ function Page() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold">📜 Логи</h1>
-          <p className="text-muted-foreground mt-1">Реальное время • {logs.length} записей</p>
+          <p className="text-muted-foreground mt-1">Реальное время • {filtered.length} / {logs.length} записей</p>
         </div>
         <div className="flex items-center gap-3">
           <span className={`text-xs px-2 py-1 rounded-full border ${
