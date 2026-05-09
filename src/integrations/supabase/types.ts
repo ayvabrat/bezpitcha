@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      author_styles: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_default: boolean
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          is_default?: boolean
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_default?: boolean
+        }
+        Relationships: []
+      }
       channels: {
         Row: {
           added_at: string
@@ -38,20 +59,80 @@ export type Database = {
         }
         Relationships: []
       }
+      materials: {
+        Row: {
+          actuality_score: number | null
+          content_type: string | null
+          id: string
+          interest_score: number | null
+          media_paths: Json | null
+          original_text: string | null
+          parsed_at: string
+          platforms: Json | null
+          published_at: string | null
+          reasoning: string | null
+          recommendation: string | null
+          relevance_score: number | null
+          source_name: string | null
+          source_type: string | null
+          status: string | null
+        }
+        Insert: {
+          actuality_score?: number | null
+          content_type?: string | null
+          id?: string
+          interest_score?: number | null
+          media_paths?: Json | null
+          original_text?: string | null
+          parsed_at?: string
+          platforms?: Json | null
+          published_at?: string | null
+          reasoning?: string | null
+          recommendation?: string | null
+          relevance_score?: number | null
+          source_name?: string | null
+          source_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          actuality_score?: number | null
+          content_type?: string | null
+          id?: string
+          interest_score?: number | null
+          media_paths?: Json | null
+          original_text?: string | null
+          parsed_at?: string
+          platforms?: Json | null
+          published_at?: string | null
+          reasoning?: string | null
+          recommendation?: string | null
+          relevance_score?: number | null
+          source_name?: string | null
+          source_type?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       watermark_settings: {
         Row: {
+          file_path: string | null
+          id: string | null
           image_path: string | null
           opacity: number
           updated_at: string
           user_id: string
         }
         Insert: {
+          file_path?: string | null
+          id?: string | null
           image_path?: string | null
           opacity?: number
           updated_at?: string
           user_id: string
         }
         Update: {
+          file_path?: string | null
+          id?: string | null
           image_path?: string | null
           opacity?: number
           updated_at?: string
