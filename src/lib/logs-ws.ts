@@ -1,5 +1,4 @@
 import { API_BASE_URL } from "./api-client";
-import { getAccessToken } from "./supabase-auth";
 
 export type LogEntry = {
   time: string;
