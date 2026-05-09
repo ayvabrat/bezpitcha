@@ -20,14 +20,21 @@ function Page() {
   const [status, setStatus] = useState<LogsStatus>("connecting");
   const [autoStick, setAutoStick] = useState(true);
   const [hasNew, setHasNew] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<"all" | "info" | "warning" | "error">("all");
+  const [search, setSearch] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     return connectLogs({
-      onMessage: (l) => setLogs((p) => [...p, l].slice(-500)),
+      onMessage: (l) => setLogs((p) => [...p, l].slice(-1000)),
       onStatus: setStatus,
     });
   }, []);
+
+  const filtered = logs.filter((l) =>
+    (levelFilter === "all" || l.level === levelFilter) &&
+    (!search || l.message.toLowerCase().includes(search.toLowerCase()))
+  );
 
   // Auto-scroll only if user is near bottom
   useEffect(() => {
